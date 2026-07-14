@@ -105,7 +105,7 @@ export default function BookingModal({
 
       // Trigger GET webhook integration
       try {
-        const webhookUrl = new URL('http://localhost:5678/webhook-test/1da1f9ef-4f8e-4f06-9349-4f76e838dc5c');
+        const webhookUrl = new URL('http://localhost:5678/webhook/1da1f9ef-4f8e-4f06-9349-4f76e838dc5c');
         webhookUrl.searchParams.append('name', reservationData.name);
         webhookUrl.searchParams.append('mobile', reservationData.mobile);
         webhookUrl.searchParams.append('email', reservationData.email);
