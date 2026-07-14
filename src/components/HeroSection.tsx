@@ -15,13 +15,13 @@ export default function HeroSection({ onOpenBooking }: HeroSectionProps) {
       {/* Background Image with elegant overlay */}
       <div className="absolute inset-0 z-0">
         <img
-          src="/src/assets/images/fort_hero_banner_1784014129794.jpg"
-          alt="Fort Restaurant Royal Interior"
-          className="w-full h-full object-cover object-center opacity-45 transform scale-105"
+          src="/src/assets/images/chettinad_meals_hero_1784036214119.jpg"
+          alt="Traditional South Indian Chettinadu Meals on Banana Leaf"
+          className="w-full h-full object-cover object-center opacity-75 saturate-125 contrast-[1.05] brightness-[1.05] transform scale-105 transition-all duration-700"
           referrerPolicy="no-referrer"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-heritage-dark via-heritage-dark/80 to-transparent z-10" />
-        <div className="absolute inset-0 bg-gradient-to-t from-heritage-dark via-transparent to-heritage-dark/50 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-heritage-dark/95 via-heritage-dark/50 to-transparent z-10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-heritage-dark/90 via-transparent to-heritage-dark/20 z-10" />
       </div>
 
       <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full text-left py-12 md:py-24">

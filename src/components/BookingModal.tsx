@@ -90,8 +90,7 @@ export default function BookingModal({
       const code = 'FORT-' + Math.floor(1000 + Math.random() * 9000);
       setReservationCode(code);
 
-      // Submit data to state
-      onSubmit({
+      const reservationData = {
         name: name.trim(),
         mobile: mobile.trim(),
         email: email.trim(),
@@ -99,7 +98,32 @@ export default function BookingModal({
         date,
         time,
         notes: notes.trim() || undefined,
-      });
+      };
+
+      // Submit data to local state
+      onSubmit(reservationData);
+
+      // Trigger GET webhook integration
+      try {
+        const webhookUrl = new URL('http://localhost:5678/webhook-test/1da1f9ef-4f8e-4f06-9349-4f76e838dc5c');
+        webhookUrl.searchParams.append('name', reservationData.name);
+        webhookUrl.searchParams.append('mobile', reservationData.mobile);
+        webhookUrl.searchParams.append('email', reservationData.email);
+        webhookUrl.searchParams.append('guests', String(reservationData.guests));
+        webhookUrl.searchParams.append('date', reservationData.date);
+        webhookUrl.searchParams.append('time', reservationData.time);
+        if (reservationData.notes) {
+          webhookUrl.searchParams.append('notes', reservationData.notes);
+        }
+        webhookUrl.searchParams.append('code', code);
+
+        fetch(webhookUrl.toString(), {
+          method: 'GET',
+          mode: 'no-cors' // Ensures request fires even if destination has no CORS headers configured
+        }).catch(err => console.log('Webhook GET error:', err));
+      } catch (err) {
+        console.error('Failed to construct or call webhook URL:', err);
+      }
 
       setIsSuccess(true);
     }
@@ -116,6 +140,25 @@ export default function BookingModal({
     setErrors({});
     setIsSuccess(false);
     onClose();
+  };
+
+  const handleViewInLedger = () => {
+    setName('');
+    setMobile('');
+    setEmail('');
+    setGuests(2);
+    setDate('');
+    setTime('');
+    setNotes('');
+    setErrors({});
+    setIsSuccess(false);
+    onClose();
+    setTimeout(() => {
+      const element = document.getElementById('reservations');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 150);
   };
 
   return (
@@ -395,12 +438,20 @@ export default function BookingModal({
               A royal digital ticket has been dispatched to <strong>{email}</strong>. We look forward to serving you Chennai’s finest heritage cuisine!
             </p>
 
-            <button
-              onClick={handleResetAndClose}
-              className="w-full py-3 bg-heritage-gold text-heritage-dark text-[10px] font-bold uppercase tracking-[0.2em] rounded-none hover:bg-white transition-colors duration-200"
-            >
-              Back to Home
-            </button>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button
+                onClick={handleViewInLedger}
+                className="flex-1 py-3 bg-heritage-gold text-heritage-dark text-[10px] font-bold uppercase tracking-[0.2em] rounded-none hover:bg-white transition-colors duration-200"
+              >
+                View in Ledger
+              </button>
+              <button
+                onClick={handleResetAndClose}
+                className="flex-1 py-3 border border-gray-500 text-gray-300 text-[10px] font-bold uppercase tracking-[0.2em] rounded-none hover:bg-white/10 transition-colors duration-200"
+              >
+                Close Window
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

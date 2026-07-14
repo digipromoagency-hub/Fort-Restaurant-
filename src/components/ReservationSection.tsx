@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Quote, Star, Clock, MapPin, Calendar, CheckCircle, ArrowRight } from 'lucide-react';
+import { Quote, Star, Clock, MapPin, Calendar, CheckCircle, ArrowRight, Search, Users2 } from 'lucide-react';
 import { REVIEWS } from '../data';
 import { Reservation } from '../types';
 
@@ -15,6 +15,19 @@ export default function ReservationSection({
   reservations,
   onCancelReservation,
 }: ReservationSectionProps) {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredReservations = reservations.filter((res) => {
+    const term = searchTerm.toLowerCase().trim();
+    if (!term) return true;
+    return (
+      res.name.toLowerCase().includes(term) ||
+      res.mobile.includes(term) ||
+      res.time.toLowerCase().includes(term) ||
+      (res.notes && res.notes.toLowerCase().includes(term))
+    );
+  });
+
   return (
     <section id="reservations" className="py-20 md:py-28 bg-heritage-cream text-heritage-charcoal relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -133,20 +146,50 @@ export default function ReservationSection({
           {/* Interactive Live Reservations Ledger */}
           <div className="lg:col-span-7 bg-white p-8 md:p-12 rounded-none border border-heritage-gold/20 shadow-artistic flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between mb-6">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
                 <div>
                   <h3 className="font-serif-display text-2xl font-semibold tracking-tight text-heritage-charcoal">
                     Your Bookings Ledger
                   </h3>
                   <p className="text-xs text-heritage-gray font-light mt-1">
-                    Real-time reservation status at Fort Restaurant
+                    Real-time list of all confirmed seats at Fort Restaurant
                   </p>
                 </div>
-                <span className="px-2.5 py-1 bg-green-100 text-green-800 text-[9px] font-bold rounded-none animate-pulse flex items-center space-x-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-600" />
-                  <span>Live Terminal</span>
-                </span>
+                <div className="flex items-center space-x-2">
+                  <span className="px-2 py-0.5 bg-heritage-gold/10 text-heritage-dark border border-heritage-gold/20 text-[9px] font-bold uppercase tracking-wider flex items-center space-x-1">
+                    <Users2 className="w-3 h-3 text-heritage-gold" />
+                    <span>{reservations.length} Active</span>
+                  </span>
+                  <span className="px-2.5 py-1 bg-green-100 text-green-800 text-[9px] font-bold rounded-none animate-pulse flex items-center space-x-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-green-600" />
+                    <span>Live Terminal</span>
+                  </span>
+                </div>
               </div>
+
+              {/* Real-time search filter */}
+              {reservations.length > 0 && (
+                <div className="relative mb-5">
+                  <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-heritage-gold pointer-events-none">
+                    <Search className="w-4 h-4" />
+                  </span>
+                  <input
+                    type="text"
+                    placeholder="Search booked people by name, phone, or time slot..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full pl-9 pr-4 py-2.5 bg-heritage-cream/40 border border-heritage-gold/25 text-xs text-heritage-dark focus:outline-none focus:border-heritage-gold transition-colors font-sans"
+                  />
+                  {searchTerm && (
+                    <button
+                      onClick={() => setSearchTerm('')}
+                      className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-heritage-dark text-[11px] font-medium"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+              )}
 
               {reservations.length === 0 ? (
                 <div className="py-12 text-center border-2 border-dashed border-heritage-gold/20 rounded-none">
@@ -156,14 +199,21 @@ export default function ReservationSection({
                     Click "Open Booking Console" or select a dish to secure your royal seat.
                   </p>
                 </div>
+              ) : filteredReservations.length === 0 ? (
+                <div className="py-10 text-center bg-heritage-cream/20 border border-heritage-gold/10">
+                  <p className="text-sm font-medium text-heritage-charcoal">No matches found</p>
+                  <p className="text-xs text-heritage-gray mt-1">
+                    We couldn't find any booking matching "{searchTerm}"
+                  </p>
+                </div>
               ) : (
                 <div className="space-y-4 max-h-[280px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-heritage-gold">
-                  {reservations.map((res) => (
+                  {filteredReservations.map((res) => (
                     <motion.div
                       key={res.id}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      className="p-4 bg-heritage-cream/40 rounded-none border border-heritage-gold/20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3"
+                      className="p-4 bg-heritage-cream/40 rounded-none border border-heritage-gold/20 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 hover:border-heritage-gold transition-colors duration-200"
                     >
                       <div>
                         <div className="flex items-center space-x-2">
@@ -173,14 +223,14 @@ export default function ReservationSection({
                             {res.status}
                           </span>
                         </div>
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-1 mt-2 text-xs text-heritage-gray">
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-1 mt-2 text-xs text-heritage-gray font-sans">
                           <span>📅 {res.date}</span>
                           <span>⏰ {res.time}</span>
                           <span>👥 {res.guests} Persons</span>
                           <span>📞 {res.mobile}</span>
                         </div>
                         {res.notes && (
-                          <div className="mt-1.5 text-[10px] italic text-heritage-gray bg-white px-2 py-0.5 rounded-none border border-heritage-gold/10 inline-block">
+                          <div className="mt-1.5 text-[10px] italic text-heritage-gray bg-white px-2 py-0.5 rounded-none border border-heritage-gold/10 inline-block font-sans">
                             📌 Note: "{res.notes}"
                           </div>
                         )}
