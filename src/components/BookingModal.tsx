@@ -116,6 +116,9 @@ export default function BookingModal({
           webhookUrl.searchParams.append('notes', reservationData.notes);
         }
         webhookUrl.searchParams.append('code', code);
+        
+        // Pass the submission source URL so the webhook knows it originated from the Vercel app or current preview environment
+        webhookUrl.searchParams.append('source', window.location.href || 'https://fort-restaurant.vercel.app/');
 
         fetch(webhookUrl.toString(), {
           method: 'GET',
