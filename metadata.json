@@ -1,0 +1,6 @@
+{
+  "name": "Fort Restaurant",
+  "description": "An elegant heritage dining experience in Chennai, showcasing authentic royal recipes, Chettinad specialties, and a premium atmosphere.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
