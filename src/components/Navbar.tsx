@@ -3,9 +3,11 @@ import { Menu, X, Phone, Clock, Landmark } from 'lucide-react';
 
 interface NavbarProps {
   onOpenBooking: () => void;
+  currentPage: string;
+  onChangePage: (page: string) => void;
 }
 
-export default function Navbar({ onOpenBooking }: NavbarProps) {
+export default function Navbar({ onOpenBooking, currentPage, onChangePage }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -22,11 +24,11 @@ export default function Navbar({ onOpenBooking }: NavbarProps) {
   }, []);
 
   const navLinks = [
-    { name: 'Home', href: '#home' },
-    { name: 'Why Us', href: '#standout' },
-    { name: 'Our Story', href: '#about' },
-    { name: 'The Menu', href: '#menu' },
-    { name: 'Reservations', href: '#reservations' },
+    { name: 'Home', id: 'home' },
+    { name: 'Why Us', id: 'why-us' },
+    { name: 'Our Story', id: 'our-story' },
+    { name: 'The Menu', id: 'the-menu' },
+    { name: 'Reservations', id: 'reservations' },
   ];
 
   return (
@@ -41,7 +43,13 @@ export default function Navbar({ onOpenBooking }: NavbarProps) {
         <div className="flex items-center justify-between">
           
           {/* Logo */}
-          <a href="#home" className="flex items-center space-x-2 group">
+          <button
+            onClick={() => {
+              onChangePage('home');
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }}
+            className="flex items-center space-x-2 group text-left"
+          >
             <div className="p-2 bg-heritage-gold text-heritage-dark rounded-md transition-transform duration-300 group-hover:rotate-12">
               <Landmark className="w-6 h-6" />
             </div>
@@ -53,19 +61,29 @@ export default function Navbar({ onOpenBooking }: NavbarProps) {
                 Restaurant • Chennai
               </span>
             </div>
-          </a>
+          </button>
 
           {/* Desktop Nav */}
           <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="text-[10px] uppercase font-bold tracking-[0.25em] text-gray-300 hover:text-heritage-gold transition-colors duration-200 relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-heritage-gold after:transition-all after:duration-300 hover:after:w-full"
-              >
-                {link.name}
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = currentPage === link.id;
+              return (
+                <button
+                  key={link.id}
+                  onClick={() => {
+                    onChangePage(link.id);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className={`text-[10px] uppercase font-bold tracking-[0.25em] transition-colors duration-200 relative py-1 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:bg-heritage-gold after:transition-all after:duration-300 hover:after:w-full ${
+                    isActive
+                      ? 'text-heritage-gold after:w-full'
+                      : 'text-gray-300 hover:text-heritage-gold after:w-0'
+                  }`}
+                >
+                  {link.name}
+                </button>
+              );
+            })}
           </nav>
 
           {/* Booking CTA Button */}
@@ -128,16 +146,26 @@ export default function Navbar({ onOpenBooking }: NavbarProps) {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-heritage-dark border-b border-heritage-gold/20 px-4 pt-2 pb-6 space-y-1 transition-all duration-300">
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={link.href}
-              onClick={() => setIsOpen(false)}
-              className="block px-3 py-3 rounded-md text-base font-medium text-gray-300 hover:text-white hover:bg-heritage-gold/10 border-l-2 border-transparent hover:border-heritage-gold transition-all duration-150"
-            >
-              {link.name}
-            </a>
-          ))}
+          {navLinks.map((link) => {
+            const isActive = currentPage === link.id;
+            return (
+              <button
+                key={link.id}
+                onClick={() => {
+                  setIsOpen(false);
+                  onChangePage(link.id);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
+                className={`w-full text-left block px-3 py-3 rounded-md text-base font-medium border-l-2 transition-all duration-150 ${
+                  isActive
+                    ? 'text-heritage-gold bg-heritage-gold/10 border-heritage-gold'
+                    : 'text-gray-300 hover:text-white hover:bg-heritage-gold/10 border-transparent hover:border-heritage-gold'
+                }`}
+              >
+                {link.name}
+              </button>
+            );
+          })}
           <div className="pt-4 px-3 flex flex-col space-y-3">
             <a
               href="tel:+919551258012"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import StandoutSection from './components/StandoutSection';
@@ -7,11 +7,55 @@ import MenuSection from './components/MenuSection';
 import ReservationSection from './components/ReservationSection';
 import BookingModal from './components/BookingModal';
 import Footer from './components/Footer';
+
+// Pages
+import WhyUsPage from './components/WhyUsPage';
+import OurStoryPage from './components/OurStoryPage';
+import TheMenuPage from './components/TheMenuPage';
+import ReservationsPage from './components/ReservationsPage';
+import PrivacyPolicyPage from './components/PrivacyPolicyPage';
+import DisclaimerPage from './components/DisclaimerPage';
+import TermsOfServicePage from './components/TermsOfServicePage';
+
 import { Reservation } from './types';
 
 export default function App() {
+  const [currentPage, setCurrentPage] = useState<
+    'home' | 'why-us' | 'our-story' | 'the-menu' | 'reservations' | 'privacy' | 'disclaimer' | 'terms'
+  >('home');
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [preselectedDish, setPreselectedDish] = useState<string | undefined>(undefined);
+  
+  // Handle incoming link routing if any hash exists in URL on initial mount
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash;
+      if (hash === '#why-us' || hash === '#standout') setCurrentPage('why-us');
+      else if (hash === '#our-story' || hash === '#about') setCurrentPage('our-story');
+      else if (hash === '#the-menu' || hash === '#menu') setCurrentPage('the-menu');
+      else if (hash === '#reservations') setCurrentPage('reservations');
+      else if (hash === '#privacy') setCurrentPage('privacy');
+      else if (hash === '#disclaimer') setCurrentPage('disclaimer');
+      else if (hash === '#terms') setCurrentPage('terms');
+      else setCurrentPage('home');
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    // Trigger once on load
+    handleHashChange();
+
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  const changePage = (page: any) => {
+    setCurrentPage(page);
+    // Update hash silently or clear it
+    if (page === 'home') {
+      window.history.pushState(null, '', ' ');
+    } else {
+      window.history.pushState(null, '', `#${page}`);
+    }
+  };
   
   // Real-time client-side reservation list, pre-seeded with 2 realistic bookings
   const [reservations, setReservations] = useState<Reservation[]>([
@@ -78,29 +122,68 @@ export default function App() {
     <div className="min-h-screen bg-heritage-cream text-heritage-charcoal font-sans relative" id="app-root">
       
       {/* Persistant Top Navigation */}
-      <Navbar onOpenBooking={handleOpenBooking} />
+      <Navbar onOpenBooking={handleOpenBooking} currentPage={currentPage} onChangePage={changePage} />
 
-      {/* SECTION 1: Hero Banner */}
-      <HeroSection onOpenBooking={handleOpenBooking} />
+      {/* Dynamic Page Rendering */}
+      <main className="min-h-[80vh]">
+        {currentPage === 'home' && (
+          <>
+            {/* SECTION 1: Hero Banner */}
+            <HeroSection onOpenBooking={handleOpenBooking} />
 
-      {/* SECTION 2: Why We Stand Out */}
-      <StandoutSection />
+            {/* SECTION 2: Why We Stand Out */}
+            <StandoutSection />
 
-      {/* SECTION 3: About Us & The Story */}
-      <AboutSection />
+            {/* SECTION 3: About Us & The Story */}
+            <AboutSection />
 
-      {/* SECTION 4: Interactive Menu */}
-      <MenuSection onOpenBookingWithDish={handleOpenBookingWithDish} />
+            {/* SECTION 4: Interactive Menu */}
+            <MenuSection onOpenBookingWithDish={handleOpenBookingWithDish} />
 
-      {/* SECTION 5: Testimonials, Contact and Live Ledger Tracker */}
-      <ReservationSection
-        onOpenBooking={handleOpenBooking}
-        reservations={reservations}
-        onCancelReservation={handleCancelReservation}
-      />
+            {/* SECTION 5: Testimonials, Contact and Live Ledger Tracker */}
+            <ReservationSection
+              onOpenBooking={handleOpenBooking}
+              reservations={reservations}
+              onCancelReservation={handleCancelReservation}
+            />
+          </>
+        )}
+
+        {currentPage === 'why-us' && (
+          <WhyUsPage onOpenBooking={handleOpenBooking} />
+        )}
+
+        {currentPage === 'our-story' && (
+          <OurStoryPage />
+        )}
+
+        {currentPage === 'the-menu' && (
+          <TheMenuPage onOpenBookingWithDish={handleOpenBookingWithDish} />
+        )}
+
+        {currentPage === 'reservations' && (
+          <ReservationsPage
+            onOpenBooking={handleOpenBooking}
+            reservations={reservations}
+            onCancelReservation={handleCancelReservation}
+          />
+        )}
+
+        {currentPage === 'privacy' && (
+          <PrivacyPolicyPage />
+        )}
+
+        {currentPage === 'disclaimer' && (
+          <DisclaimerPage />
+        )}
+
+        {currentPage === 'terms' && (
+          <TermsOfServicePage />
+        )}
+      </main>
 
       {/* Dynamic Footer */}
-      <Footer />
+      <Footer onChangePage={changePage} />
 
       {/* Pop-up Table Booking Form Modal */}
       <BookingModal

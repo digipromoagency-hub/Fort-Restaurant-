@@ -1,7 +1,11 @@
 import React from 'react';
 import { Landmark, Phone, Mail, MapPin, Star, Facebook, Instagram } from 'lucide-react';
 
-export default function Footer() {
+interface FooterProps {
+  onChangePage: (page: string) => void;
+}
+
+export default function Footer({ onChangePage }: FooterProps) {
   return (
     <footer className="bg-heritage-dark text-white pt-16 pb-8 border-t border-heritage-gold/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -10,14 +14,20 @@ export default function Footer() {
           
           {/* Brand Col */}
           <div className="md:col-span-4 space-y-4">
-            <a href="#home" className="flex items-center space-x-2 group">
+            <button
+              onClick={() => {
+                onChangePage('home');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="flex items-center space-x-2 group text-left"
+            >
               <div className="p-2 bg-heritage-gold text-heritage-dark rounded-none transition-transform duration-300 group-hover:rotate-6">
                 <Landmark className="w-5 h-5" />
               </div>
               <span className="font-serif-display text-xl font-bold tracking-wider text-white">
                 FORT RESTAURANT
               </span>
-            </a>
+            </button>
             
             <p className="text-xs text-gray-400 font-serif italic leading-relaxed max-w-sm">
               Fort Restaurant preserves and celebrates the forgotten noble recipes of Chennai and Chettinad, serving authentic royal banquets in a restored 18th-century sanctuary.
@@ -46,31 +56,61 @@ export default function Footer() {
             <h4 className="text-[10px] font-bold text-heritage-gold uppercase tracking-[0.2em]">
               Explore
             </h4>
-            <ul className="space-y-2 text-xs text-gray-400 font-light">
+            <ul className="space-y-2 text-xs text-gray-400 font-light flex flex-col items-start gap-1">
               <li>
-                <a href="#home" className="hover:text-heritage-gold transition-colors">
+                <button
+                  onClick={() => {
+                    onChangePage('home');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="hover:text-heritage-gold transition-colors text-left"
+                >
                   Home
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#standout" className="hover:text-heritage-gold transition-colors">
+                <button
+                  onClick={() => {
+                    onChangePage('why-us');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="hover:text-heritage-gold transition-colors text-left"
+                >
                   Why Us
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#about" className="hover:text-heritage-gold transition-colors">
+                <button
+                  onClick={() => {
+                    onChangePage('our-story');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="hover:text-heritage-gold transition-colors text-left"
+                >
                   Our Story
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#menu" className="hover:text-heritage-gold transition-colors">
+                <button
+                  onClick={() => {
+                    onChangePage('the-menu');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="hover:text-heritage-gold transition-colors text-left"
+                >
                   The Menu
-                </a>
+                </button>
               </li>
               <li>
-                <a href="#reservations" className="hover:text-heritage-gold transition-colors">
+                <button
+                  onClick={() => {
+                    onChangePage('reservations');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }}
+                  className="hover:text-heritage-gold transition-colors text-left"
+                >
                   Reservations
-                </a>
+                </button>
               </li>
             </ul>
           </div>
@@ -133,10 +173,43 @@ export default function Footer() {
         </div>
 
         {/* Footer Bottom */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-center text-[11px] text-gray-500 font-light">
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center text-[11px] text-gray-500 font-light border-t border-white/5 mt-8">
           <p>© 2026 Fort Restaurant, Chennai. All Royal Rights Reserved.</p>
+          
+          <div className="flex flex-wrap justify-center gap-x-4 gap-y-1 text-gray-400 font-sans">
+            <button
+              onClick={() => {
+                onChangePage('privacy');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="hover:text-heritage-gold transition-colors duration-200"
+            >
+              Privacy Policy
+            </button>
+            <span>•</span>
+            <button
+              onClick={() => {
+                onChangePage('disclaimer');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="hover:text-heritage-gold transition-colors duration-200"
+            >
+              Disclaimer
+            </button>
+            <span>•</span>
+            <button
+              onClick={() => {
+                onChangePage('terms');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+              }}
+              className="hover:text-heritage-gold transition-colors duration-200"
+            >
+              Terms of Services
+            </button>
+          </div>
+
           <p>
-            Designed with <Star className="w-3 h-3 text-heritage-gold inline fill-heritage-gold" /> for Tamil culinary heritage.
+            Designed with <Star className="w-3 h-3 text-heritage-gold inline fill-heritage-gold mx-0.5" /> for Tamil culinary heritage.
           </p>
         </div>
 
