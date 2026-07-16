@@ -64,7 +64,7 @@ export default function WhyUsPage({ onOpenBooking }: WhyUsPageProps) {
               THE FORT ADVANTAGE
             </span>
             <h1 className="font-serif-display text-4xl md:text-5xl font-semibold tracking-tight leading-tight text-white max-w-3xl mx-auto">
-              Why We Stand Out
+              Why Fort Restaurant?
             </h1>
             <div className="w-16 h-[2px] bg-heritage-gold mx-auto my-6" />
             <p className="text-sm md:text-base text-gray-300 max-w-2xl mx-auto font-light leading-relaxed">
