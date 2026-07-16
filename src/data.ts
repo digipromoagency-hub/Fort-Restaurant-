@@ -28,7 +28,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 525,
     category: 'starters',
     isSpicy: true,
-    image: 'https://images.unsplash.com/photo-1625938146369-adc83368bda7?auto=format&fit=crop&q=80&w=600'
+    image: '/src/assets/images/regenerated_image_1784175494573.png'
   },
   {
     id: 'm4',
